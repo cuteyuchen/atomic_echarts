@@ -1,0 +1,133 @@
+import type { EChartsOption } from '../types';
+import type { Theme } from '../types';
+
+import * as echarts from 'echarts';
+
+import { useGetWaterYAxis } from '../config/yAxisConfig';
+import useEchartsThemeColor from '../utils/useEchartsThemeColor';
+
+export default function useCrossEcharts(theme?: Theme) {
+  const { textColor, lineColor } = useEchartsThemeColor(theme);
+
+  const path =
+    'path://M158.3104 589.824h707.3792a10.8544 10.8544 0 0 0 10.8544-10.8544v-133.98016a10.8544 10.8544 0 0 0-10.8544-10.8544H155.648a8.192 8.192 0 0 0-8.192 8.192v136.56064a10.8544 10.8544 0 0 0 10.8544 10.93632z M512 512m-131.072 0a131.072 131.072 0 1 0 262.144 0 131.072 131.072 0 1 0-262.144 0Z';
+
+  function getEchartsOptions(IdData: any[], source: any[], markPointData?: any[]): EChartsOption {
+    return {
+      color: ['#FFCC00', '#037AFF', '#AEE500', '#23D692'],
+      dataZoom: [{ type: 'inside' }, { type: 'slider', height: 20 }],
+      tooltip: {
+        trigger: 'axis',
+        formatter: (params: any) => {
+          let formatter = IdData[params[0].dataIndex];
+          params.forEach((item: any) => {
+            const yIndex = item.encode?.y?.[0] ?? item.seriesIndex + 1;
+            formatter += `<br/>${item.marker}${item.seriesName}：${item.value[yIndex]}`;
+          });
+          return formatter;
+        },
+      },
+      grid: {
+        left: 60,
+        top: 60,
+        right: '2%',
+        bottom: 50,
+      },
+      legend: {
+        textStyle: {
+          color: textColor.value,
+        },
+        data: [
+          { name: '河床', icon: 'rect' },
+          { name: '水位', icon: path },
+          { name: '左堤', icon: path },
+          { name: '右堤', icon: path },
+        ],
+        top: 0,
+        left: 'center',
+        right: 'center'
+      },
+      xAxis: {
+        type: 'value',
+        // data: distanceData,
+        max: 'dataMax',
+        axisPointer: { type: 'none' },
+        splitLine: { show: false },
+        axisTick: { show: false },
+        axisLine: { show: false },
+        axisLabel: {
+          show: false,
+          formatter: '',
+        },
+      },
+      yAxis: useGetWaterYAxis({ textColor: textColor.value, lineColor: lineColor.value }),
+      dataset: { source },
+      series: [
+        {
+          name: '河床',
+          encode: { x: 0, y: 1 },
+          smooth: true,
+          showSymbol: false,
+          type: 'line',
+          lineStyle: { width: 0 },
+          areaStyle: {
+            opacity: 1,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#FF9F60' },
+              { offset: 0.5, color: '#FF9F60' },
+              { offset: 1, color: '#815131' },
+            ]),
+          },
+          z: 3,
+        },
+        {
+          name: '水位',
+          z: 2,
+          encode: { x: 0, y: 2 },
+          smooth: true,
+          showSymbol: false,
+          type: 'line',
+          lineStyle: { color: '#00A0B4' },
+          areaStyle: {
+            opacity: 1,
+            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              { offset: 0, color: '#278dff' },
+              { offset: 1, color: '#144780' },
+            ]),
+          },
+          markPoint: {
+            symbol: 'circle',
+            symbolSize: 5,
+            itemStyle: {
+              color: 'red',
+            },
+            data: markPointData || [],
+            animation: false,
+          },
+        },
+        {
+          name: '左堤',
+          type: 'line',
+          encode: { x: 0, y: 3 },
+          smooth: true,
+          showSymbol: false,
+          lineStyle: { color: '#00FEFE' },
+          z: 3,
+        },
+        {
+          name: '右堤',
+          type: 'line',
+          encode: { x: 0, y: 4 },
+          smooth: true,
+          showSymbol: false,
+          lineStyle: { color: '#76E40D' },
+          z: 3,
+        },
+      ],
+    };
+  }
+
+  return {
+    getEchartsOptions,
+  };
+}

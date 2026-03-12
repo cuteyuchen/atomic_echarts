@@ -1,0 +1,41 @@
+{
+  "name": "atomic-echarts",
+  "version": "1.0.0",
+  "description": "A collection of atomic ECharts hooks and configurations",
+  "main": "dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc",
+    "preview": "vite preview",
+    "prepare-publish": "node scripts/prepare-publish.cjs",
+    "publish-flat": "npm run build && npm run prepare-publish && cd temp-publish && npm publish",
+    "publish-flat-dry": "npm run build && npm run prepare-publish && cd temp-publish && npm publish --dry-run"
+  },
+  "keywords": [
+    "echarts",
+    "vue",
+    "hooks",
+    "atomic"
+  ],
+  "author": "",
+  "license": "ISC",
+  "peerDependencies": {
+    "echarts": "^5.0.0",
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@vitejs/plugin-vue": "^4.0.0",
+    "echarts": "^5.0.0",
+    "typescript": "^5.0.0",
+    "vite": "^4.0.0",
+    "vite-plugin-dts": "^2.0.0",
+    "vue": "^3.0.0",
+    "vue-tsc": "^2.0.0"
+  }
+}
