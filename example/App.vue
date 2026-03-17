@@ -7,7 +7,7 @@ import WaterEchartsDemo from './components/WaterEchartsDemo.vue';
 import FlowEchartsDemo from './components/FlowEchartsDemo.vue';
 import WaterFlowEchartsDemo from './components/WaterFlowEchartsDemo.vue';
 import CrossEchartsDemo from './components/CrossEchartsDemo.vue';
-import DoCountRainDrpDemo from './components/DoCountRainDrpDemo.vue';
+import RainEchartsDemo from './components/RainEchartsDemo.vue';
 import SectionalViewDemo from './components/SectionalViewDemo.vue';
 
 const theme = ref<Theme>('dark');
@@ -78,7 +78,7 @@ function toggleGlobalColor() {
       <FlowEchartsDemo v-else-if="activeTab === 'flow'" :theme="theme" />
       <WaterFlowEchartsDemo v-else-if="activeTab === 'waterflow'" :theme="theme" />
       <CrossEchartsDemo v-else-if="activeTab === 'cross'" :theme="theme" />
-      <DoCountRainDrpDemo v-else-if="activeTab === 'rain'" :theme="theme" />
+      <RainEchartsDemo v-else-if="activeTab === 'rain'" :theme="theme" />
       <SectionalViewDemo v-else-if="activeTab === 'sectional'" :theme="theme" />
     </main>
   </div>

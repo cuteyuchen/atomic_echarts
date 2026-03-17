@@ -11,7 +11,7 @@ npm install atomic-echarts
 
 ```json
 {
-  "echarts": "^5.0.0",
+  "echarts": "^6.0.0",
   "vue": "^3.0.0"
 }
 ```
@@ -189,18 +189,18 @@ chart.setOption(getEchartsOptions(IdData, source, options));
 
 ---
 
-### `useDoCountRainDrpEcharts` �?降雨量柱状图
+### `useRainEcharts` �?降雨量柱状图
 
 ```typescript
-import { useDoCountRainDrpEcharts } from 'atomic-echarts';
+import { useRainEcharts } from 'atomic-echarts';
 
-const { getEchartsOptions } = useDoCountRainDrpEcharts('light');
+const { getEchartsOptions } = useRainEcharts('light'); // 或传入 Ref<Theme>
 
 chart.setOption(
   getEchartsOptions(
     ['08:00', '09:00', '10:00'], // XData: string[]
     [0, 2.5, 8.3],               // DrpData: number[]
-    { color: ['#00B2FF'] },      // customOption（可选）
+    { title: { text: '逐时面雨量', left: 'center' } }, // customOption（可选）
   )
 );
 ```

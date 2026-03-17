@@ -1,6 +1,6 @@
 {
   "name": "atomic-echarts",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A collection of atomic ECharts hooks and configurations",
   "main": "dist/index.js",
   "module": "./dist/index.js",
