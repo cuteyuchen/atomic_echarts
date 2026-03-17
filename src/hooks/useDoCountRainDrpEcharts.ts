@@ -1,3 +1,4 @@
+import type { Ref } from 'vue';
 import type { EChartsOption } from '../types';
 import type { Theme } from '../types';
 
@@ -5,12 +6,19 @@ import { useGetRainSeries } from '../config/seriesConfig';
 import { useGetTimeXAxis } from '../config/xAxisConfig';
 import { useGetRainYAxis } from '../config/yAxisConfig';
 import useEchartsThemeColor from '../utils/useEchartsThemeColor';
+import { mergeEchartsOption } from '../utils/merge';
 
-export default function UseDoCountRainDrpEcharts(theme: Theme = 'light') {
+export default function useDoCountRainDrpEcharts(theme: Theme | Ref<Theme> = 'light') {
   const { lineColor } = useEchartsThemeColor(theme);
 
-  function getEchartsOptions(XData: any[], DrpData: any[]): EChartsOption {
-    return {
+  /**
+   * 获取降雨量柱状图配置
+   * @param XData X 轴时间数据
+   * @param DrpData 降雨量数据
+   * @param customOption 自定义配置，按索引深度合并，可选择性覆盖默认配置中的任意属性
+   */
+  function getEchartsOptions(XData: string[], DrpData: number[], customOption?: EChartsOption): EChartsOption {
+    const defaultOption: EChartsOption = {
       color: ['#3CDDCF'],
       title: {
         text: '',
@@ -100,6 +108,7 @@ export default function UseDoCountRainDrpEcharts(theme: Theme = 'light') {
         }),
       ],
     };
+    return mergeEchartsOption({}, defaultOption, customOption ?? {});
   }
 
   return {
