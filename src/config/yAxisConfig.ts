@@ -23,8 +23,8 @@ export function useCommonYAxis(options: MyYAxisOption = {}): YAxisOption {
   const { textColor = LIGHT_COLOR.textColor, lineColor = LIGHT_COLOR.lineColor } = getColorFromOptionsByTheme(options, ['textColor', 'lineColor']);
   const { data = [] } = options;
   const dataInterValMaxMin = getYAxisIntervalMaxMin(data);
-  const YAxisOption: MyYAxisOption = mergeDeep(
-    {},
+  const YAxisOption: MyYAxisOption = mergeDeep<MyYAxisOption>(
+    {} as MyYAxisOption,
     DEFAULT_Y_AXIS_OPTION,
     {
       interval: dataInterValMaxMin.interval,
@@ -35,15 +35,14 @@ export function useCommonYAxis(options: MyYAxisOption = {}): YAxisOption {
   );
   if (textColor && YAxisOption.nameTextStyle) {
     YAxisOption.nameTextStyle.color = textColor;
-    // delete YAxisOption.textColor;
   }
   if (lineColor && YAxisOption.axisLine && YAxisOption.axisLine.lineStyle) {
     YAxisOption.axisLine.lineStyle.color = lineColor;
-    // delete YAxisOption.lineColor;
   }
-  if (YAxisOption.data) {
-    // delete YAxisOption.data;
-  }
+  delete YAxisOption.textColor;
+  delete YAxisOption.lineColor;
+  delete YAxisOption.theme;
+  delete YAxisOption.data;
   return YAxisOption;
 }
 
@@ -51,8 +50,8 @@ export function useCommonYAxis(options: MyYAxisOption = {}): YAxisOption {
 export function useGetWaterYAxis(options: MyYAxisOption = {}): YAxisOption {
   const { textColor = LIGHT_COLOR.textColor } = getColorFromOptionsByTheme(options, ['textColor']);
   return useCommonYAxis(
-    mergeDeep(
-      {},
+    mergeDeep<MyYAxisOption>(
+      {} as MyYAxisOption,
       {
         name: '水位(m)',
         type: 'value',
@@ -72,8 +71,8 @@ export function useGetWaterYAxis(options: MyYAxisOption = {}): YAxisOption {
 export function useGetFlowYAxis(options: MyYAxisOption = {}): YAxisOption {
   const { textColor = LIGHT_COLOR.textColor } = getColorFromOptionsByTheme(options, ['textColor']);
   return useCommonYAxis(
-    mergeDeep(
-      {},
+    mergeDeep<MyYAxisOption>(
+      {} as MyYAxisOption,
       {
         name: '流量(m³/s)',
         type: 'value',
@@ -103,8 +102,8 @@ export function useGetFlowYAxis(options: MyYAxisOption = {}): YAxisOption {
 export function useGetRainYAxis(options: MyYAxisOption = {}): YAxisOption {
   const { textColor = LIGHT_COLOR.textColor } = getColorFromOptionsByTheme(options, ['textColor']);
   return useCommonYAxis(
-    mergeDeep(
-      {},
+    mergeDeep<MyYAxisOption>(
+      {} as MyYAxisOption,
       {
         name: '雨量(mm)',
         minInterval: 1,

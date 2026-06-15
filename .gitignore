@@ -4,3 +4,6 @@ dist
 *.local
 .vscode
 temp-publish
+.idea
+.claude
+.trae

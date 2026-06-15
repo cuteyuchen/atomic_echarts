@@ -6,6 +6,7 @@ import type { Theme } from 'atomic-echarts';
 import WaterEchartsDemo from './components/WaterEchartsDemo.vue';
 import FlowEchartsDemo from './components/FlowEchartsDemo.vue';
 import WaterFlowEchartsDemo from './components/WaterFlowEchartsDemo.vue';
+import WaterFlowRainEchartsDemo from './components/WaterFlowRainEchartsDemo.vue';
 import CrossEchartsDemo from './components/CrossEchartsDemo.vue';
 import RainEchartsDemo from './components/RainEchartsDemo.vue';
 import SectionalViewDemo from './components/SectionalViewDemo.vue';
@@ -17,6 +18,7 @@ const tabs = [
   { key: 'water', label: '水位图' },
   { key: 'flow', label: '流量图' },
   { key: 'waterflow', label: '水位流量双轴' },
+  { key: 'waterflowrain', label: '水位流量雨量' },
   { key: 'cross', label: '横断面图' },
   { key: 'rain', label: '降雨量图' },
   { key: 'sectional', label: '断面图' },
@@ -77,6 +79,7 @@ function toggleGlobalColor() {
       <WaterEchartsDemo v-if="activeTab === 'water'" :theme="theme" />
       <FlowEchartsDemo v-else-if="activeTab === 'flow'" :theme="theme" />
       <WaterFlowEchartsDemo v-else-if="activeTab === 'waterflow'" :theme="theme" />
+      <WaterFlowRainEchartsDemo v-else-if="activeTab === 'waterflowrain'" :theme="theme" />
       <CrossEchartsDemo v-else-if="activeTab === 'cross'" :theme="theme" />
       <RainEchartsDemo v-else-if="activeTab === 'rain'" :theme="theme" />
       <SectionalViewDemo v-else-if="activeTab === 'sectional'" :theme="theme" />

@@ -1,6 +1,10 @@
 import { ECHART_COLOR } from '../config/config';
 import type { EchartsColor } from '../types';
-import { Theme } from '../types';
+import type { Theme } from '../types';
+
+type ThemeColorOptions = Partial<EchartsColor> & {
+  theme?: Theme;
+};
 
 /**
  * 根据主题和选项获取颜色配置
@@ -8,7 +12,7 @@ import { Theme } from '../types';
  * @param keys 需要获取的颜色键名数组
  * @returns 包含对应颜色值的对象
  */
-export function getColorFromOptionsByTheme(options: any, keys: Array<keyof EchartsColor>) {
+export function getColorFromOptionsByTheme(options: ThemeColorOptions = {}, keys: Array<keyof EchartsColor>): Partial<EchartsColor> {
   const theme: Theme = options.theme || 'light';
   const themeColors = ECHART_COLOR[theme];
   const result: Partial<EchartsColor> = {};

@@ -3,8 +3,8 @@
  * @param item 
  * @returns 
  */
-export function isObject(item: any): item is Record<string, any> {
-  return (item && typeof item === 'object' && !Array.isArray(item));
+export function isObject(item: unknown): item is Record<string, unknown> {
+  return !!item && typeof item === 'object' && !Array.isArray(item);
 }
 
 /**
@@ -14,19 +14,21 @@ export function isObject(item: any): item is Record<string, any> {
  * @param sources 源对象
  * @returns 合并后的对象
  */
-export function mergeDeep(target: any, ...sources: any[]): any {
+export function mergeDeep<T>(target: T, ...sources: unknown[]): T {
   if (!sources.length) return target;
   const source = sources.shift();
 
   if (isObject(target) && isObject(source)) {
+    const targetRecord = target as Record<string, unknown>;
     for (const key in source) {
-      if (isObject(source[key])) {
-        if (!target[key]) {
-            Object.assign(target, { [key]: {} });
+      const sourceVal = source[key];
+      if (isObject(sourceVal)) {
+        if (!isObject(targetRecord[key])) {
+          targetRecord[key] = {};
         }
-        mergeDeep(target[key], source[key]);
+        mergeDeep(targetRecord[key], sourceVal);
       } else {
-        Object.assign(target, { [key]: source[key] });
+        targetRecord[key] = sourceVal;
       }
     }
   }
@@ -44,20 +46,21 @@ export function mergeDeep(target: any, ...sources: any[]): any {
  * // 只修改第一条 series 的颜色，其余保持不变
  * mergeEchartsOption({}, defaultOption, { series: [{ lineStyle: { color: 'red' } }] })
  */
-export function mergeEchartsOption(target: any, ...sources: any[]): any {
+export function mergeEchartsOption<T>(target: T, ...sources: unknown[]): T {
   if (!sources.length) return target;
   const source = sources.shift();
 
   if (isObject(target) && isObject(source)) {
+    const targetRecord = target as Record<string, unknown>;
     for (const key in source) {
       const sourceVal = source[key];
-      const targetVal = target[key];
+      const targetVal = targetRecord[key];
 
       if (Array.isArray(sourceVal)) {
         if (Array.isArray(targetVal)) {
           // 按索引深度合并数组元素
           const merged = [...targetVal];
-          sourceVal.forEach((item: any, i: number) => {
+          sourceVal.forEach((item, i) => {
             if (i < merged.length && isObject(merged[i]) && isObject(item)) {
               merged[i] = mergeDeep({}, merged[i], item);
             } else {
@@ -68,17 +71,17 @@ export function mergeEchartsOption(target: any, ...sources: any[]): any {
           for (let i = targetVal.length; i < sourceVal.length; i++) {
             merged.push(sourceVal[i]);
           }
-          target[key] = merged;
+          targetRecord[key] = merged;
         } else {
-          target[key] = [...sourceVal];
+          targetRecord[key] = [...sourceVal];
         }
       } else if (isObject(sourceVal)) {
         if (!targetVal) {
-          target[key] = {};
+          targetRecord[key] = {};
         }
-        mergeEchartsOption(target[key], sourceVal);
+        mergeEchartsOption(targetRecord[key], sourceVal);
       } else {
-        target[key] = sourceVal;
+        targetRecord[key] = sourceVal;
       }
     }
   }

@@ -36,6 +36,39 @@ const packageJson = JSON.parse(fs.readFileSync(path.join(tempDir, 'package.json'
 packageJson.main = "index.js";
 packageJson.module = "index.js";
 packageJson.types = "index.d.ts";
+packageJson.exports = {
+  ".": {
+    "types": "./index.d.ts",
+    "import": "./index.js",
+    "default": "./index.js"
+  },
+  "./config/*": {
+    "types": "./config/*.d.ts",
+    "import": "./config/*.js",
+    "default": "./config/*.js"
+  },
+  "./hooks/*": {
+    "types": "./hooks/*.d.ts",
+    "import": "./hooks/*.js",
+    "default": "./hooks/*.js"
+  },
+  "./types": {
+    "types": "./types/index.d.ts",
+    "import": "./types/index.js",
+    "default": "./types/index.js"
+  },
+  "./types/*": {
+    "types": "./types/*.d.ts",
+    "import": "./types/*.js",
+    "default": "./types/*.js"
+  },
+  "./utils/*": {
+    "types": "./utils/*.d.ts",
+    "import": "./utils/*.js",
+    "default": "./utils/*.js"
+  },
+  "./package.json": "./package.json"
+};
 packageJson.files = [
   "*.js",
   "*.d.ts",

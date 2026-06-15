@@ -1,37 +1,23 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, toRef, watchEffect } from 'vue';
-import * as echarts from 'echarts';
+import { toRef, useTemplateRef } from 'vue';
 import { useWaterEcharts } from 'atomic-echarts';
 import type { Theme } from 'atomic-echarts';
+import { useDemoChart } from '../composables/useDemoChart';
 
+/***********************组件入参*********************/
 const props = defineProps<{ theme: Theme }>();
 const theme = toRef(props, 'theme');
 
-let chart: echarts.EChartsType | null = null;
-let containerEl: HTMLElement | null = null;
-
+/***********************图表数据*********************/
 const XData = ['01/01', '01/02', '01/03', '01/04', '01/05', '01/06', '01/07', '01/08', '01/09', '01/10'];
 const WaterData = [45.20, 46.10, 47.80, 48.30, 47.50, 46.90, 45.80, 44.20, 43.50, 42.80];
 
-// 传入响应式 Ref<Theme>，getEchartsOptions 内部的颜色会随主题/全局换色自动更新
+/***********************图表配置*********************/
 const { getEchartsOptions } = useWaterEcharts(theme);
+const chartContainerRef = useTemplateRef<HTMLDivElement>('chartContainer');
 
-onMounted(() => {
-  containerEl = document.getElementById('water-chart')!;
-  // watchEffect 会追踪 getEchartsOptions 内部读取的所有响应式颜色
-  // 当主题切换或 setGlobalColor 触发时，自动重绘图表
-  watchEffect(() => {
-    chart?.dispose();
-    chart = echarts.init(containerEl!, theme.value === 'dark' ? 'dark' : undefined);
-    chart.setOption(getEchartsOptions(XData, WaterData), true);
-  });
-  window.addEventListener('resize', () => chart?.resize());
-});
-
-onUnmounted(() => {
-  chart?.dispose();
-  chart = null;
-});
+/***********************图表生命周期*********************/
+useDemoChart(chartContainerRef, theme, () => getEchartsOptions(XData, WaterData));
 </script>
 
 <template>
@@ -42,7 +28,7 @@ onUnmounted(() => {
     </div>
 
     <div class="demo-body">
-      <div id="water-chart" class="chart-container" />
+      <div ref="chartContainer" class="chart-container" />
 
       <div class="code-block">
         <div class="code-label">用法示例</div>
