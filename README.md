@@ -62,24 +62,25 @@ setGlobalColor('dark', {
 
 所有 Hook 均支持传入 `Ref<Theme>`。配合 `watchEffect`，主题切换时图表**自动重绘**，无需手动监听。
 ```typescript
-import { ref, watchEffect, onMounted } from 'vue';
+import { ref, watchEffect, useTemplateRef } from 'vue';
 import * as echarts from 'echarts';
-import { useWaterEcharts } from 'atomic-echarts';
+import { setGlobalColor, useWaterEcharts } from 'atomic-echarts';
 
 const theme = ref<'light' | 'dark'>('dark');
+const chartContainerRef = useTemplateRef<HTMLDivElement>('chartContainer');
 
 // 传入 Ref<Theme>，内部颜色会随 theme 响应变化
 const { getEchartsOptions } = useWaterEcharts(theme);
 
 let chart: echarts.EChartsType | null = null;
 
-onMounted(() => {
-  const el = document.getElementById('chart')!;
-  watchEffect(() => {
-    chart?.dispose();
-    chart = echarts.init(el, theme.value === 'dark' ? 'dark' : undefined);
-    chart.setOption(getEchartsOptions(xData, waterData));
-  });
+watchEffect(() => {
+  const el = chartContainerRef.value;
+  if (!el) return;
+
+  chart?.dispose();
+  chart = echarts.init(el, theme.value === 'dark' ? 'dark' : undefined);
+  chart.setOption(getEchartsOptions(xData, waterData));
 });
 
 // 切换主题 - watchEffect 自动触发 - 图表自动重绘
@@ -164,6 +165,35 @@ chart.setOption(
 
 ---
 
+### `useWaterFlowRainEcharts` - 水位流量雨量组合图
+上方展示雨量柱状图，下方展示水位（左 Y 轴）与流量（右 Y 轴）双轴曲线。默认主题为 `dark`。
+```typescript
+import { useWaterFlowRainEcharts } from 'atomic-echarts';
+
+const { getEchartsOptions } = useWaterFlowRainEcharts('dark');
+
+chart.setOption(
+  getEchartsOptions(
+    ['08:00', '09:00', '10:00'], // XData: string[]
+    [45.2, 46.1, 47.8],          // WaterData: number[]
+    [1200, 1350, 1800],          // FlowData: number[]
+    [0, 2.5, 8.3],               // DrpData: number[]
+    {
+      grid: [{ height: 110 }], // 覆盖 grid[0]：雨量区域
+      series: [
+        {},
+        {},
+        { lineStyle: { width: 4 } }, // 覆盖 series[2]：流量线
+      ],
+    },
+  )
+);
+```
+
+默认索引：`grid[0]` / `xAxis[0]` / `yAxis[0]` / `series[0]` 为雨量，`grid[1]` / `xAxis[1]` / `yAxis[1]` / `series[1]` 为水位，`yAxis[2]` / `series[2]` 为流量。
+
+---
+
 ### `useCrossEcharts` - 横断面图
 
 展示河道横断面（河床 / 水位 / 左堤 / 右堤），支持水位标注点。
@@ -221,8 +251,7 @@ const RiverBedData = [52,40,30,24,19,19,24,30,40,52]; // 河床
 
 const { getEchartsOptions } = useSectionalViewEcharts('light');
 
-// 注意：传入副本，因内部会修改 XData[0] 和 XData[末尾]
-chart.setOption(getEchartsOptions([...XData], WaterData, RiverBedData));
+chart.setOption(getEchartsOptions(XData, WaterData, RiverBedData));
 ```
 
 ---
@@ -252,7 +281,7 @@ const result = mergeEchartsOption(
 
 获取响应式主题颜色，支持 `Ref<Theme>`。
 ```typescript
-import useEchartsThemeColor from 'atomic-echarts/utils/useEchartsThemeColor';
+import { useEchartsThemeColor } from 'atomic-echarts';
 
 const theme = ref<'light' | 'dark'>('dark');
 const { textColor, lineColor, waterColor, flowColor, drpColor } = useEchartsThemeColor(theme);
@@ -293,6 +322,7 @@ import {
 
 ```bash
 npm run build           # TypeScript 编译到 dist/
+npm run check           # 检查库源码与 example 组件类型
 npm run publish-flat    # 构建 + 发布
 npm run publish-flat-dry # 试运行（不实际发布）
 ```

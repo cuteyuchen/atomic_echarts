@@ -21,8 +21,11 @@ export default function useSectionalViewEcharts(theme?: Theme | Ref<Theme>) {
    * @param customOption 自定义配置，按索引深度合并，可选择性覆盖默认配置中的任意属性
    */
   function getEchartsOptions(XData: string[], WaterData: number[], RiverBedData: number[], customOption?: EChartsOption): EChartsOption {
-    XData[0] = '左岸';
-    XData[XData.length - 1] = '右岸';
+    const xAxisData = [...XData];
+    if (xAxisData.length > 0) {
+      xAxisData[0] = '左岸';
+      xAxisData[xAxisData.length - 1] = '右岸';
+    }
     const defaultOption: EChartsOption = {
       tooltip: {
         trigger: 'axis',
@@ -47,7 +50,7 @@ export default function useSectionalViewEcharts(theme?: Theme | Ref<Theme>) {
         top: 0,
         right: 0,
       },
-      xAxis: [useCommonXAxis({ data: XData, textColor: textColor.value, lineColor: lineColor.value })],
+      xAxis: [useCommonXAxis({ data: xAxisData, textColor: textColor.value, lineColor: lineColor.value })],
       yAxis: [
         useGetWaterYAxis({
           data: [...WaterData, ...RiverBedData],

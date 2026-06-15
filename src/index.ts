@@ -14,6 +14,7 @@ import useRainEcharts from './hooks/useRainEcharts';
 import useSectionalViewEcharts from './hooks/useSectionalViewEcharts';
 import useWaterEcharts from './hooks/useWaterEcharts';
 import useWaterFlowEcharts from './hooks/useWaterFlowEcharts';
+import useWaterFlowRainEcharts from './hooks/useWaterFlowRainEcharts';
 
 export {
   useCrossEcharts,
@@ -22,4 +23,5 @@ export {
   useSectionalViewEcharts,
   useWaterEcharts,
   useWaterFlowEcharts,
+  useWaterFlowRainEcharts,
 };

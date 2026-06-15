@@ -1,34 +1,23 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, toRef, watchEffect } from 'vue';
-import * as echarts from 'echarts';
+import { toRef, useTemplateRef } from 'vue';
 import { useRainEcharts } from 'atomic-echarts';
 import type { Theme } from 'atomic-echarts';
+import { useDemoChart } from '../composables/useDemoChart';
 
+/***********************组件入参*********************/
 const props = defineProps<{ theme: Theme }>();
 const theme = toRef(props, 'theme');
 
-let chart: echarts.EChartsType | null = null;
-let containerEl: HTMLElement | null = null;
-
+/***********************图表数据*********************/
 const XData: string[] = ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
 const DrpData: number[] = [0, 2.5, 8.3, 15.2, 5.6, 2.1, 0, 3.4, 12.8, 6.5];
 
+/***********************图表配置*********************/
 const { getEchartsOptions } = useRainEcharts(theme);
+const chartContainerRef = useTemplateRef<HTMLDivElement>('chartContainer');
 
-onMounted(() => {
-  containerEl = document.getElementById('rain-chart')!;
-  watchEffect(() => {
-    chart?.dispose();
-    chart = echarts.init(containerEl!, theme.value === 'dark' ? 'dark' : undefined);
-    chart.setOption(getEchartsOptions(XData, DrpData), true);
-  });
-  window.addEventListener('resize', () => chart?.resize());
-});
-
-onUnmounted(() => {
-  chart?.dispose();
-  chart = null;
-});
+/***********************图表生命周期*********************/
+useDemoChart(chartContainerRef, theme, () => getEchartsOptions(XData, DrpData));
 </script>
 
 <template>
@@ -39,7 +28,7 @@ onUnmounted(() => {
     </div>
 
     <div class="demo-body">
-      <div id="rain-chart" class="chart-container" />
+      <div ref="chartContainer" class="chart-container" />
 
       <div class="code-block">
         <div class="code-label">用法示例</div>

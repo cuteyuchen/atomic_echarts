@@ -2,8 +2,8 @@ import type { MarkLineDataOption } from '../types';
 import { mergeDeep } from '../utils/merge';
 
 export function useGetMarkLine(option: MarkLineDataOption = {}): MarkLineDataOption {
-  return mergeDeep(
-    {},
+  return mergeDeep<MarkLineDataOption>(
+    {} as MarkLineDataOption,
     {
       label: {
         position: 'middle',

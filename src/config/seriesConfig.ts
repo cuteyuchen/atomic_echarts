@@ -30,31 +30,38 @@ const DEFAULT_BAR_SERIES_OPTION: Readonly<MyBarSeriesOption> = {
 };
 
 export function useCommonLineSeries(option: MyLineSeriesOption = {}): MyLineSeriesOption {
-  const seriesOption = mergeDeep({}, DEFAULT_LINE_SERIES_OPTION, option);
+  const seriesOption = mergeDeep<MyLineSeriesOption>({} as MyLineSeriesOption, DEFAULT_LINE_SERIES_OPTION, option);
   if (option.color && seriesOption.lineStyle) {
     seriesOption.lineStyle.shadowColor = option.color as string;
   }
+  delete seriesOption.textColor;
+  delete seriesOption.lineColor;
+  delete seriesOption.theme;
   return seriesOption;
 }
 
 export function useCommonBarSeries(option: MyBarSeriesOption = {}): MyBarSeriesOption {
-  return mergeDeep({}, DEFAULT_BAR_SERIES_OPTION, option);
+  const seriesOption = mergeDeep<MyBarSeriesOption>({} as MyBarSeriesOption, DEFAULT_BAR_SERIES_OPTION, option);
+  delete seriesOption.textColor;
+  delete seriesOption.lineColor;
+  delete seriesOption.theme;
+  return seriesOption;
 }
 
 // 水位series
 export function useGetWaterSeries(options: MyLineSeriesOption = {}): MyLineSeriesOption {
   const { waterColor } = getColorFromOptionsByTheme(options, ['waterColor']);
-  return useCommonLineSeries(mergeDeep({}, { name: '水位', color: waterColor }, options));
+  return useCommonLineSeries(mergeDeep<MyLineSeriesOption>({} as MyLineSeriesOption, { name: '水位', color: waterColor }, options));
 }
 
 // 流量series
 export function useGetFlowSeries(options: MyLineSeriesOption = {}): MyLineSeriesOption {
   const { flowColor } = getColorFromOptionsByTheme(options, ['flowColor']);
-  return useCommonLineSeries(mergeDeep({}, { name: '流量', color: flowColor, yAxisIndex: 1 }, options));
+  return useCommonLineSeries(mergeDeep<MyLineSeriesOption>({} as MyLineSeriesOption, { name: '流量', color: flowColor, yAxisIndex: 1 }, options));
 }
 
 // 降雨series
 export function useGetRainSeries(options: MyBarSeriesOption = {}): MyBarSeriesOption {
   const { drpColor } = getColorFromOptionsByTheme(options, ['drpColor']);
-  return useCommonBarSeries(mergeDeep({}, { name: '降雨', itemStyle: { color: drpColor } }, options));
+  return useCommonBarSeries(mergeDeep<MyBarSeriesOption>({} as MyBarSeriesOption, { name: '降雨', itemStyle: { color: drpColor } }, options));
 }

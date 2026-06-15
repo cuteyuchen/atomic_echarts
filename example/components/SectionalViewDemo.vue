@@ -1,37 +1,26 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, toRef, watchEffect } from 'vue';
-import * as echarts from 'echarts';
+import { toRef, useTemplateRef } from 'vue';
 import { useSectionalViewEcharts } from 'atomic-echarts';
 import type { Theme } from 'atomic-echarts';
+import { useDemoChart } from '../composables/useDemoChart';
 
+/***********************组件入参*********************/
 const props = defineProps<{ theme: Theme }>();
 const theme = toRef(props, 'theme');
 
-let chart: echarts.EChartsType | null = null;
-let containerEl: HTMLElement | null = null;
-
+/***********************图表数据*********************/
 const XData: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 // 水位线（均值，形成平面）
 const WaterData: number[] = [47, 47, 47, 47, 47, 47, 47, 47, 47, 47];
 // 河床高程（U 型河床）
 const RiverBedData: number[] = [52, 40, 30, 24, 19, 19, 24, 30, 40, 52];
 
+/***********************图表配置*********************/
 const { getEchartsOptions } = useSectionalViewEcharts(theme);
+const chartContainerRef = useTemplateRef<HTMLDivElement>('chartContainer');
 
-onMounted(() => {
-  containerEl = document.getElementById('sectional-chart')!;
-  watchEffect(() => {
-    chart?.dispose();
-    chart = echarts.init(containerEl!, theme.value === 'dark' ? 'dark' : undefined);
-    chart.setOption(getEchartsOptions([...XData], WaterData, RiverBedData), true);
-  });
-  window.addEventListener('resize', () => chart?.resize());
-});
-
-onUnmounted(() => {
-  chart?.dispose();
-  chart = null;
-});
+/***********************图表生命周期*********************/
+useDemoChart(chartContainerRef, theme, () => getEchartsOptions(XData, WaterData, RiverBedData));
 </script>
 
 <template>
@@ -42,7 +31,7 @@ onUnmounted(() => {
     </div>
 
     <div class="demo-body">
-      <div id="sectional-chart" class="chart-container" />
+      <div ref="chartContainer" class="chart-container" />
 
       <div class="code-block">
         <div class="code-label">用法示例</div>
@@ -54,11 +43,11 @@ const WaterData = [47,47,47,47,47,47,47,47,47,47];
 const RiverBedData = [52,40,30,24,19,19,24,30,40,52];
 
 const { getEchartsOptions } = useSectionalViewEcharts('light');
-chart.setOption(getEchartsOptions([...XData], WaterData, RiverBedData));
+chart.setOption(getEchartsOptions(XData, WaterData, RiverBedData));
 
 // 覆盖 grid 让图表更紧凑
 chart.setOption(
-  getEchartsOptions([...XData], WaterData, RiverBedData, {
+  getEchartsOptions(XData, WaterData, RiverBedData, {
     grid: { left: 60, right: 60 },
   })
 );</code></pre>

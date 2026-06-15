@@ -1,10 +1,43 @@
 {
   "name": "atomic-echarts",
-  "version": "1.1.0",
+  "version": "1.1.3",
   "description": "A collection of atomic ECharts hooks and configurations",
   "main": "dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./config/*": {
+      "types": "./dist/config/*.d.ts",
+      "import": "./dist/config/*.js",
+      "default": "./dist/config/*.js"
+    },
+    "./hooks/*": {
+      "types": "./dist/hooks/*.d.ts",
+      "import": "./dist/hooks/*.js",
+      "default": "./dist/hooks/*.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "default": "./dist/types/index.js"
+    },
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/types/*.js",
+      "default": "./dist/types/*.js"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "import": "./dist/utils/*.js",
+      "default": "./dist/utils/*.js"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist"
   ],
@@ -12,6 +45,9 @@
     "dev": "vite",
     "example": "vite",
     "build": "tsc",
+    "typecheck:lib": "tsc --noEmit",
+    "typecheck:example": "vue-tsc -p example/tsconfig.json --noEmit",
+    "check": "npm run typecheck:lib && npm run typecheck:example",
     "preview": "vite preview",
     "prepare-publish": "node scripts/prepare-publish.cjs",
     "publish-flat": "npm run build && npm run prepare-publish && cd temp-publish && npm publish",

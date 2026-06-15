@@ -1,6 +1,7 @@
 import type { Ref } from 'vue';
 import type { EChartsOption } from '../types';
 import type { Theme } from '../types';
+import type { MarkPointOption } from '../types';
 
 import * as echarts from 'echarts';
 
@@ -14,8 +15,21 @@ import { mergeEchartsOption } from '../utils/merge';
  */
 export type CrossEchartsOptions = EChartsOption & {
   /** 水位线上的标注点数据，格式与 ECharts markPoint.data 一致 */
-  markPointData?: any[];
+  markPointData?: NonNullable<MarkPointOption['data']>;
 };
+
+type CrossTooltipParam = {
+  dataIndex: number;
+  encode?: { y?: number[] };
+  marker?: string;
+  seriesIndex: number;
+  seriesName: string;
+  value: unknown[];
+};
+
+function isCrossTooltipParams(params: unknown): params is CrossTooltipParam[] {
+  return Array.isArray(params);
+}
 
 export default function useCrossEcharts(theme?: Theme | Ref<Theme>) {
   const { textColor, lineColor } = useEchartsThemeColor(theme);
@@ -29,7 +43,7 @@ export default function useCrossEcharts(theme?: Theme | Ref<Theme>) {
    * @param source dataset 二维源数据（每行：[距离, 河床, 水位, 左堤, 右堤]）
    * @param options 可选配置对象，含 markPointData（标注点）及所有 EChartsOption 字段
    * @example
-   * getEchartsOptions(IdData, source, { markPointData: [{ xAxis: 50, yAxis: 47 }], grid: { left: 80 } })
+   * getEchartsOptions(IdData, source, { markPointData: [{ name: '峰值', xAxis: 50, yAxis: 47 }], grid: { left: 80 } })
    */
   function getEchartsOptions(IdData: string[], source: number[][], options?: CrossEchartsOptions): EChartsOption {
     const { markPointData = [], ...customOption } = options ?? ({} as CrossEchartsOptions);
@@ -39,9 +53,10 @@ export default function useCrossEcharts(theme?: Theme | Ref<Theme>) {
       dataZoom: [{ type: 'inside' }, { type: 'slider', height: 20 }],
       tooltip: {
         trigger: 'axis',
-        formatter: (params: any) => {
+        formatter: (params: unknown) => {
+          if (!isCrossTooltipParams(params) || !params[0]) return '';
           let formatter = IdData[params[0].dataIndex];
-          params.forEach((item: any) => {
+          params.forEach(item => {
             const yIndex = item.encode?.y?.[0] ?? item.seriesIndex + 1;
             formatter += `<br/>${item.marker}${item.seriesName}：${item.value[yIndex]}`;
           });

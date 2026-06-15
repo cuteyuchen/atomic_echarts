@@ -27,7 +27,7 @@ const DEFAULT_X_AXIS_OPTION: Readonly<XAxisOption> = {
 };
 
 export function useCommonXAxis(option: MyXAxisOption = {}): XAxisOption {
-  const XAxisOption = mergeDeep({}, DEFAULT_X_AXIS_OPTION, option);
+  const XAxisOption = mergeDeep<MyXAxisOption>({} as MyXAxisOption, DEFAULT_X_AXIS_OPTION, option);
   if (option.textColor && XAxisOption.axisLine) {
     if (XAxisOption.axisLine.lineStyle) {
       XAxisOption.axisLine.lineStyle.color = option.textColor;
@@ -36,6 +36,9 @@ export function useCommonXAxis(option: MyXAxisOption = {}): XAxisOption {
   if (option.lineColor && XAxisOption.axisLabel) {
     XAxisOption.axisLabel.color = option.lineColor;
   }
+  delete XAxisOption.textColor;
+  delete XAxisOption.lineColor;
+  delete XAxisOption.theme;
   return XAxisOption;
 }
 
@@ -43,8 +46,8 @@ export function useCommonXAxis(option: MyXAxisOption = {}): XAxisOption {
 export function useGetTimeXAxis(option: MyXAxisOption = {}): XAxisOption {
   const { textColor = LIGHT_COLOR.textColor } = getColorFromOptionsByTheme(option, ['textColor']);
   return useCommonXAxis(
-    mergeDeep(
-      {},
+    mergeDeep<MyXAxisOption>(
+      {} as MyXAxisOption,
       {
         type: 'category',
         axisLabel: {
