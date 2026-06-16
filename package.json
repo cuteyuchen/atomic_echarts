@@ -48,10 +48,11 @@
     "typecheck:lib": "tsc --noEmit",
     "typecheck:example": "vue-tsc -p example/tsconfig.json --noEmit",
     "check": "npm run typecheck:lib && npm run typecheck:example",
+    "clean:publish": "node scripts/clean-publish.cjs",
     "preview": "vite preview",
     "prepare-publish": "node scripts/prepare-publish.cjs",
-    "publish-flat": "npm run build && npm run prepare-publish && cd temp-publish && npm publish",
-    "publish-flat-dry": "npm run build && npm run prepare-publish && cd temp-publish && npm publish --dry-run"
+    "publish-flat": "npm run clean:publish && npm run build && npm run prepare-publish && cd temp-publish && npm publish",
+    "publish-flat-dry": "npm run clean:publish && npm run build && npm run prepare-publish && cd temp-publish && npm publish --dry-run"
   },
   "keywords": [
     "echarts",

@@ -107,6 +107,7 @@ export function useGetRainYAxis(options: MyYAxisOption = {}): YAxisOption {
       {
         name: '雨量(mm)',
         minInterval: 1,
+        min: 0,
         type: 'value',
         nameTextStyle: {
           color: textColor,

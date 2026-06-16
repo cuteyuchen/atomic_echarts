@@ -66,6 +66,8 @@ export default function useWaterFlowRainEcharts(theme: Theme | Ref<Theme> = 'dar
         useGetRainYAxis({
           gridIndex: 0,
           data: DrpData,
+          inverse: true,
+          nameLocation: 'start',
           textColor: textColor.value,
           lineColor: lineColor.value,
         }),

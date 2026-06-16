@@ -166,7 +166,7 @@ chart.setOption(
 ---
 
 ### `useWaterFlowRainEcharts` - 水位流量雨量组合图
-上方展示雨量柱状图，下方展示水位（左 Y 轴）与流量（右 Y 轴）双轴曲线。默认主题为 `dark`。
+上方展示雨量柱状图，下方展示水位（左 Y 轴）与流量（右 Y 轴）双轴曲线。雨量 Y 轴默认倒置显示，轴名位于倒置后的顶端，默认主题为 `dark`。
 ```typescript
 import { useWaterFlowRainEcharts } from 'atomic-echarts';
 
